@@ -1,0 +1,7 @@
+{
+  "compatibility_date": "2026-10-28",
+  "name": "motionsitesv5-physics-cosmos",
+  "assets": {
+    "directory": "./public"
+  }
+}
