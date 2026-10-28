@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Physics &amp; Cosmos — Lesson 3</title>
+<style>
+@font-face{font-family:"NotoSerifX";font-weight:100 900;font-stretch:62.5% 100%;font-style:normal;font-display:block;src:url(asset/font-eed105a8cdcde827.woff2) format("woff2")}
+@font-face{font-family:"InterX";font-weight:100 900;font-style:normal;font-display:block;src:url(asset/font-3100e775e8616cd2.woff2) format("woff2")}
+
+/* ============ Design tokens (all values measured from the 1527×1030 reference) ============ */
+:root{
+  --bg:#f0ede1;
+  --ink:#000000;
+  --ink-muted:#686a64;
+  --ink-slash:#86827f;
+  --ink-handle:#787671;
+  --ink-placeholder:#817f82;
+  --white:#ffffff;
+  --accent:#d96134;          /* pause button */
+  --star:#ed611a;
+  --live:#ea3a1f;
+  --serif:"NotoSerifX", "Noto Serif", Georgia, "Times New Roman", serif;
+  --sans:"InterX", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --glass-dark:rgba(255,255,255,.12);
+  --r-card:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg)}
+body{overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block}
+
+/* ============ Fit-to-viewport shell ============
+   The stage is laid out in design pixels (reference = 1527×1030) and uniformly scaled.
+   Instead of letter-boxing, the stage's design-space width/height is extended to the
+   viewport's aspect ratio, and flexible tracks absorb the surplus — so there is never
+   blank space at the top/bottom (or sides). */
+#shell{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
+#stage{position:absolute;left:0;top:0;width:1527px;height:1030px;transform-origin:0 0;background:var(--bg);
+  display:grid;
+  grid-template-columns:710fr minmax(705px,520fr);
+  column-gap:42px;
+  grid-template-rows:46px 35fr 176px 34fr 413fr 28fr 231fr;
+  padding:34px 35px 33px 35px;
+  font-family:var(--sans);font-weight:440;color:var(--ink);
+}
+
+/* ============ HERO / PLAYER ============ */
+.hero{grid-column:1;grid-row:1 / -1;margin-top:1px;position:relative;border-radius:var(--r-card);overflow:hidden;background:#04070c;isolation:isolate;min-height:0}
+.hero__img{position:absolute;left:-7px;top:14px;width:calc(100% + 9px);height:calc(100% - 3px);object-fit:cover;object-position:50% 0;z-index:0}
+.glass{background:var(--glass-dark);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.hero__top{position:absolute;left:29px;right:12px;top:33px;height:43px;display:flex;align-items:center;z-index:2}
+.chip{height:43px;border-radius:22px;display:inline-flex;align-items:center;color:#fff;font-size:16.4px;letter-spacing:0;line-height:1;white-space:nowrap}
+.chip--live{width:87px;padding-left:18px}
+.chip--live{padding-left:18px}
+.chip--live i{width:9px;height:9px;border-radius:50%;background:var(--live);margin-right:10px;flex:none;margin-top:0px}
+.chip--views{width:96px;margin-left:13px;padding-left:18px;font-size:17.3px;padding-top:2px}
+.chip--views svg{position:relative;top:-1px}
+.chip--views svg{width:19px;height:15px;margin-right:13px;flex:none}
+.close{margin-left:auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;margin-top:-1px}
+.close svg{width:11px;height:11px}
+
+.player{position:absolute;left:29px;right:13px;bottom:29px;height:139px;border-radius:28px;z-index:2;
+  background:rgba(235,240,245,.075);-webkit-backdrop-filter:blur(110px) saturate(.75);backdrop-filter:blur(110px) saturate(.75);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.player__row1{position:absolute;left:29px;right:28px;top:21px;height:26px;display:flex;align-items:center;justify-content:space-between}
+.player__title{font-family:var(--serif);font-size:17.7px;color:#fff;letter-spacing:-.09px;line-height:26px;white-space:nowrap}
+.player__next{font-family:var(--serif);font-size:17.7px;color:#bebfbf;line-height:26px;display:flex;align-items:center;white-space:nowrap;letter-spacing:-.35px}
+.player__next svg{width:17px;height:12px;margin-left:11.5px;position:relative;top:1px}
+.btn-round{position:absolute;border-radius:50%;display:grid;place-items:center}
+.btn-pause{left:29px;top:65px;width:52px;height:52px;background:var(--accent)}
+.btn-pause svg{width:15px;height:16px}
+.btn-vol{left:92px;top:65px;width:51px;height:51px;background:rgba(255,255,255,.17)}
+.btn-vol svg{width:19px;height:15px;position:relative;left:-1px;top:1px}
+.btn-fs{right:26px;top:66px;width:50px;height:50px;background:rgba(255,255,255,.14)}
+.btn-fs svg{width:20px;height:20px}
+.track{position:absolute;left:173px;right:108px;top:74px;height:3px;border-radius:2px;background:rgba(255,255,255,.17)}
+.track__fill{position:absolute;left:0;top:0;bottom:0;width:81%;border-radius:2px;background:#fff}
+.track__knob{position:absolute;left:81%;top:50%;width:10px;height:10px;margin:-4.5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.time{position:absolute;top:89px;font-size:16px;line-height:20px;letter-spacing:0;white-space:nowrap}
+.time--cur{left:172px;color:#fff}
+.time--rem{right:108px;color:#bfc1c5}
+
+/* ============ TOP BAR ============ */
+.topbar{grid-column:2;grid-row:1;display:flex;align-items:flex-start;min-width:0}
+.search{width:315px;height:45.5px;border-radius:23px;background:#fff;display:flex;align-items:center;padding-left:13px;margin-left:0;color:var(--ink-placeholder);font-size:16.4px;letter-spacing:-.35px;flex:none}
+.search svg{width:20px;height:21px;margin-right:13px;flex:none;margin-top:0}
+.search{font-weight:420}
+.bell{width:45.5px;height:45.5px;border-radius:50%;background:#fff;display:grid;place-items:center;margin-left:13.5px;flex:none;margin-top:0}
+.search span{position:relative;top:-1px}
+.bell svg{width:18px;height:20px;margin-top:1px}
+.user{margin-left:auto;display:flex;align-items:center;flex:none;width:183px}
+.avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;position:relative;flex:none;background:#d9662f}
+.avatar img{position:absolute;left:-3px;top:-2px;width:50px;height:50px}
+.user__txt{margin-left:13px;width:124px}
+.user__name{font-weight:470;font-size:16.5px;line-height:20px;letter-spacing:-.15px;color:#000;white-space:nowrap;margin-top:0}
+.user__handle{font-size:14.5px;line-height:18px;color:var(--ink-handle);margin-top:5px;white-space:nowrap}
+
+/* ============ INTRO ============ */
+.intro{grid-column:2;grid-row:3;min-width:0}
+.crumbs{font-weight:490;font-size:16px;line-height:20px;letter-spacing:-.29px;color:var(--ink-muted);white-space:nowrap;margin-top:4px}
+.crumbs .sep{color:var(--ink-slash);margin:0 .38em}
+.crumbs b{font-weight:400;color:#000}
+.title{font-family:var(--serif);font-weight:400;font-size:46px;line-height:56px;letter-spacing:.25px;margin-top:36px;white-space:nowrap}
+.meta{display:flex;gap:13px;margin-top:17px;margin-left:1px}
+.pill{font-weight:480;height:41.5px;border-radius:21px;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:16.5px;letter-spacing:-.2px;white-space:nowrap}
+.pill--l{width:113px}.pill--m{width:88px}.pill--r{width:209px;justify-content:flex-start;padding-left:18px;letter-spacing:-.4px}
+.pill svg{width:18px;height:17px;margin-right:11px;margin-top:-1px}
+
+/* ============ LESSONS ============ */
+.lessons{grid-column:2;grid-row:5;min-width:0;display:flex;flex-direction:column}
+.lessons h2{font-family:var(--serif);font-weight:400;font-size:29px;line-height:36px;letter-spacing:0;margin-top:5px;white-space:nowrap}
+.lesson-list{list-style:none;margin-top:22px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;flex:1}
+.lesson{position:relative;display:flex;align-items:flex-start;height:106px}
+.thumb{width:140px;height:106px;border-radius:22px;overflow:hidden;position:relative;flex:none;isolation:isolate}
+.thumb img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
+.thumb img.z-speed{left:-7.14%;width:115%;height:114.2%}
+.thumb img.z-inertia{top:-2.83%;width:110.7%;height:110.4%}
+.play{position:absolute;left:43px;top:28px;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
+.play svg{width:14px;height:16px;margin-left:1px}
+.lesson__body{margin-left:25px;flex:1;min-width:0}
+.lesson__title{font-family:var(--serif);font-weight:430;font-size:23.2px;line-height:30px;letter-spacing:0;margin-top:12px;white-space:nowrap}
+.lesson__desc{font-size:15.6px;line-height:21px;letter-spacing:-.22px;margin-top:8px;color:#000}
+.dur{position:absolute;right:1px;top:30px;width:90px;height:43px;border-radius:22px;background:#fff;display:grid;place-items:center;font-weight:460;font-size:17.4px;letter-spacing:-.4px;white-space:nowrap;padding-top:1px}
+.lesson:nth-child(2) .dur{top:31px}.lesson:nth-child(3) .dur{top:32px}
+.lesson:nth-child(1) .lesson__title{letter-spacing:-.16px}.lesson:nth-child(2) .lesson__title{letter-spacing:.16px}
+.lesson:nth-child(2) .lesson__desc{letter-spacing:-.1px}.lesson:nth-child(3) .lesson__desc{margin-top:9px;line-height:22px;letter-spacing:-.29px}
+
+/* ============ PROMO ============ */
+.promo{grid-column:2;grid-row:7;position:relative;border-radius:28px;overflow:hidden;isolation:isolate;color:#fff;min-width:0;background:#6b0a0a}
+.promo__bg{position:absolute;left:-2.84%;top:-4.33%;width:105.96%;height:106.5%;object-fit:cover;z-index:-1;filter:saturate(.94)}
+.promo__chips{position:absolute;left:29px;top:26px;display:flex;gap:13px}
+.gchip{height:43px;border-radius:22px;display:grid;place-items:center;font-size:16px;letter-spacing:0;white-space:nowrap;
+  background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.gchip--a{width:129px}.gchip--b{width:128px}
+.join{position:absolute;right:28px;top:28px;width:192px;height:40px;border-radius:20px;background:#fff;color:#000;display:grid;place-items:center;font-size:16.8px;letter-spacing:-.37px;white-space:nowrap;text-decoration:none}
+.promo__title{position:absolute;left:30px;bottom:92px;font-family:var(--serif);font-weight:400;font-size:29.5px;line-height:40px;letter-spacing:.27px;white-space:nowrap}
+.promo__desc{position:absolute;left:30px;bottom:32px;font-size:18.6px;line-height:26px;letter-spacing:.17px;color:#fff}
+
+/* ============ COMPACT (portrait tablets & phones) ============
+   Single-screen layout: every block has a fixed height except the video,
+   which absorbs whatever height remains. JS scales the stage so the whole
+   thing always fits inside one viewport — no scrolling, no blank bands. */
+body.compact #stage{display:flex;flex-direction:column;padding:16px;grid-template-rows:none;grid-template-columns:none}
+body.compact .topbar{order:1;align-items:center;height:44px;flex:none}
+body.compact .search{flex:1;width:auto;min-width:0;height:44px;padding-left:14px;font-size:15px}
+body.compact .search svg{width:18px;height:19px;margin-right:10px}
+body.compact .bell{width:44px;height:44px;margin-left:10px}
+body.compact .bell svg{width:17px;height:19px}
+body.compact .user{width:auto;margin-left:10px}
+body.compact .avatar{width:44px;height:44px}
+body.compact .avatar img{left:-2.9px;top:-1.9px;width:47.8px;height:47.8px}
+body.compact .user__txt{width:auto;margin-left:10px}
+body.compact .user__name{font-size:15px;line-height:18px}
+body.compact .user__handle{font-size:13px;line-height:16px;margin-top:2px}
+body.compact.tight .user__txt{display:none}
+
+body.compact .hero{order:2;margin-top:12px;flex:1 1 0;min-height:0;border-radius:24px}
+body.compact .hero__img{left:0;top:0;width:100%;height:100%;object-position:50% 38%}
+body.compact .hero__top{left:14px;right:14px;top:14px;height:34px}
+body.compact .chip{height:34px;font-size:13.5px;border-radius:17px}
+body.compact .chip--live{width:auto;padding:0 14px 0 13px}
+body.compact .chip--live i{width:7px;height:7px;margin-right:7px}
+body.compact .chip--views{width:auto;margin-left:8px;padding:1px 14px 0 13px;font-size:13.5px}
+body.compact .chip--views svg{width:16px;height:12.6px;margin-right:8px}
+body.compact .close{width:34px;height:34px;margin-top:0}
+body.compact .glass{background:rgba(16,20,24,.38)}
+body.compact .close svg{width:10px;height:10px}
+body.compact .player{left:12px;right:12px;bottom:12px;height:126px;border-radius:22px}
+body.compact .player__row1{left:18px;right:16px;top:10px;height:24px}
+body.compact .player__title{font-size:15px;line-height:24px;overflow:hidden;text-overflow:ellipsis;min-width:0}
+body.compact .player__next{font-size:15px;margin-left:12px;flex:none}
+body.compact.tight .nl-txt{display:none}
+body.compact .player__next svg{width:15px;height:11px;margin-left:8px}
+body.compact .track{left:18px;right:18px;top:44px}
+body.compact .time{top:52px;font-size:13px;line-height:16px}
+body.compact .time--cur{left:18px}
+body.compact .time--rem{right:18px}
+body.compact .btn-pause{left:18px;top:76px;width:40px;height:40px}
+body.compact .btn-pause svg{width:13px;height:14px}
+body.compact .btn-vol{left:66px;top:76px;width:40px;height:40px}
+body.compact .btn-vol svg{width:17px;height:13.4px;left:0;top:0}
+body.compact .btn-fs{right:18px;top:76px;width:40px;height:40px}
+body.compact .btn-fs svg{width:17px;height:17px}
+
+body.compact .intro{order:3;margin-top:14px;flex:none;height:102px}
+body.compact .crumbs{margin-top:0;font-size:13px;line-height:18px;letter-spacing:-.1px;overflow:hidden;text-overflow:ellipsis}
+body.compact .title{margin-top:4px;font-size:32px;line-height:38px;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
+body.compact .meta{margin:10px 0 0;gap:8px}
+body.compact .pill{height:32px;width:auto!important;padding:0 13px!important;font-size:13.5px;letter-spacing:-.1px;border-radius:16px}
+body.compact .pill svg{width:14px;height:13.5px;margin-right:6px}
+
+body.compact .lessons{order:4;margin-top:16px;flex:none;height:238px}
+body.compact .lessons h2{font-size:21px;line-height:26px;margin-top:0}
+body.compact .lesson-list{margin-top:10px;gap:8px;flex:none;justify-content:flex-start}
+body.compact .lesson{height:62px;align-items:center}
+body.compact .thumb{width:82px;height:62px;border-radius:14px}
+body.compact .play{left:26px;top:16px;width:30px;height:30px}
+body.compact .play svg{width:9px;height:10.5px;margin-left:1px}
+body.compact .lesson__body{margin-left:12px;align-self:flex-start}
+body.compact .lesson__title{font-size:15.5px;line-height:20px;margin-top:2px;letter-spacing:0!important;overflow:hidden;text-overflow:ellipsis}
+body.compact .lesson .lesson__desc{font-size:12.5px;line-height:16.5px;letter-spacing:0!important;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:33px}
+body.compact .d-br{display:none}
+body.compact .dur{position:static;flex:none;margin-left:10px;height:28px;width:auto;padding:0 10px;font-size:12.5px;letter-spacing:0;border-radius:14px}
+
+body.compact .promo{order:5;margin-top:16px;flex:none;height:138px;border-radius:22px}
+body.compact .promo__chips{left:14px;top:14px;gap:6px}
+body.compact .gchip{height:30px;width:auto!important;padding:0 12px;font-size:12.5px;border-radius:15px}
+body.compact .join{right:14px;top:14px;height:30px;width:auto;padding:0 12px;font-size:12.5px;letter-spacing:-.1px;border-radius:15px}
+body.compact .promo__title{left:16px;right:16px;bottom:46px;font-size:21px;line-height:26px;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
+body.compact .promo__desc{left:16px;right:16px;bottom:12px;font-size:13px;line-height:17px;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Dense tier: short phones — drop secondary lines so the video keeps its room */
+body.compact.dense .crumbs{display:none}
+body.compact.dense .intro{height:80px}
+body.compact.dense .title{margin-top:0}
+body.compact.dense .lessons{height:208px}
+body.compact.dense .lesson{height:52px}
+body.compact.dense .thumb{width:69px;height:52px;border-radius:12px}
+body.compact.dense .play{left:21.5px;top:13px;width:26px;height:26px}
+body.compact.dense .play svg{width:8px;height:9px}
+body.compact.dense .lesson__title{margin-top:0}
+body.compact.dense .lesson .lesson__desc{-webkit-line-clamp:1;height:16.5px}
+body.compact.dense .promo{height:118px}
+body.compact.dense .promo__chips,body.compact.dense .join{top:12px}
+body.compact.dense .promo__title{bottom:31px}
+body.compact.dense .promo__desc{-webkit-line-clamp:1}
+
+</style>
+</head>
+<body>
+<div id="shell">
+<main id="stage" aria-label="Physics &amp; Cosmos lesson player">
+
+  <!-- ===== HERO / LIVE PLAYER ===== -->
+  <section class="hero" aria-label="Live lesson video">
+    <img class="hero__img" alt="Night view of Earth from orbit with city lights" src="asset/image-e1af294a3315496e.webp">
+    <div class="hero__top">
+      <span class="chip chip--live glass"><i></i>Live</span>
+      <span class="chip chip--views glass" aria-label="152 viewers">
+        <svg viewBox="0 0 19 15" aria-hidden="true"><path d="M9.5.4C5.1.4 1.6 3.3 0 7.5c1.6 4.2 5.1 7.1 9.5 7.1s7.9-2.9 9.5-7.1C17.4 3.3 13.9.4 9.5.4Z" fill="#fff"/><circle cx="9.5" cy="7.5" r="3.7" fill="#2a2d31"/><circle cx="9.5" cy="7.5" r="1.7" fill="#fff"/></svg>152
+      </span>
+      <button class="close glass" aria-label="Close player">
+        <svg viewBox="0 0 11 11" aria-hidden="true"><path d="M1 1l9 9M10 1l-9 9" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="player">
+      <div class="player__row1">
+        <div class="player__title">Lesson 3. Newton’s Laws of Motion</div>
+        <button class="player__next"><span class="nl-txt">Next lesson</span><svg viewBox="0 0 17 12" aria-hidden="true"><path d="M.8 6h15M10.6 1l5.2 5-5.2 5" fill="none" stroke="#c9cbcd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <button class="btn-round btn-pause" aria-label="Pause">
+        <svg viewBox="0 0 15 16" aria-hidden="true"><rect x="0" y="0" width="5.2" height="16" rx="1.4" fill="#fff"/><rect x="9.4" y="0" width="5.6" height="16" rx="1.4" fill="#fff"/></svg>
+      </button>
+      <button class="btn-round btn-vol" aria-label="Volume">
+        <svg viewBox="0 0 19 15" aria-hidden="true"><path d="M1.3 4.4h3.1L9.4.4c.8-.6 1.8-.2 1.8.8v12.6c0 1-1 1.4-1.8.8l-5-4H1.3C.6 10.6 0 10 0 9.3V5.7c0-.7.6-1.3 1.3-1.3Z" fill="#fff"/><path d="M14.6 1.9c1.9 1.5 3.3 3.4 3.3 5.6s-1.4 4.1-3.3 5.6" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </button>
+      <div class="track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="81"><div class="track__fill"></div><div class="track__knob"></div></div>
+      <div class="time time--cur">23:15</div>
+      <div class="time time--rem">4:52</div>
+      <button class="btn-round btn-fs" aria-label="Fullscreen">
+        <svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M1 6.5V4.2C1 2.4 2.4 1 4.2 1h2.3M13.5 1h2.3C17.6 1 19 2.4 19 4.2v2.3M19 13.5v2.3c0 1.8-1.4 3.2-3.2 3.2h-2.3M6.5 19H4.2C2.4 19 1 17.6 1 15.8v-2.3"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <label class="search">
+      <svg viewBox="0 0 20 21" aria-hidden="true" fill="none" stroke="#000" stroke-width="1.9" stroke-linecap="round"><circle cx="8.6" cy="8.6" r="7.6"/><path d="M14.2 14.4l4.6 5"/></svg>
+      <span>Search</span>
+    </label>
+    <button class="bell" aria-label="Notifications">
+      <svg viewBox="0 0 18 20" aria-hidden="true" fill="none" stroke="#000" stroke-width="1.8" stroke-linejoin="round"><path d="M9 1.2c-3.1 0-5.4 2.5-5.4 5.6v4.1L1.2 14.6c-.3.5 0 1 .6 1h14.4c.6 0 .9-.5.6-1l-2.4-3.7V6.8c0-3.1-2.3-5.6-5.4-5.6Z"/><path d="M6.6 16.6c.3 1.3 1.2 2.1 2.4 2.1s2.1-.8 2.4-2.1" stroke-linecap="round"/></svg>
+    </button>
+    <div class="user">
+      <div class="avatar"><img alt="Kimberly Myers" src="asset/image-05dd580239741ad3.webp"></div>
+      <div class="user__txt">
+        <div class="user__name">Kimberly Myers</div>
+        <div class="user__handle">@kimb_m</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== COURSE INTRO ===== -->
+  <section class="intro">
+    <nav class="crumbs" aria-label="Breadcrumb">Courses<span class="sep">/</span>Physics &amp; Cosmos<span class="sep">/</span><b>Lesson 3. Newton's Laws of Motion</b></nav>
+    <h1 class="title">Physics &amp; Cosmos</h1>
+    <div class="meta">
+      <span class="pill pill--l">12 lessons</span>
+      <span class="pill pill--m">28 min</span>
+      <span class="pill pill--r"><svg viewBox="0 0 16 16" preserveAspectRatio="none" aria-hidden="true"><path d="M8 .6c.3 0 .5.2.6.4l1.9 4 4.3.6c.6.1.8.8.4 1.2l-3.1 3 .7 4.3c.1.6-.5 1-1 .7L8 12.8l-3.8 2c-.5.3-1.1-.1-1-.7l.7-4.3-3.1-3c-.4-.4-.2-1.1.4-1.2l4.3-.6 1.9-4c.1-.2.3-.4.6-.4Z" fill="#ed611a"/></svg>4.9 (2.4K students)</span>
+    </div>
+  </section>
+
+  <!-- ===== PREVIOUS LESSONS ===== -->
+  <section class="lessons" aria-labelledby="prev-h">
+    <h2 id="prev-h">Previous Lessons</h2>
+    <ul class="lesson-list">
+      <li class="lesson">
+        <div class="thumb"><img alt="" src="asset/image-08d1f8cd0ba6a8b2.webp"><span class="play"><svg viewBox="0 0 14 16" aria-hidden="true"><path d="M0 1.7v12.6c0 1.3 1.4 2.1 2.5 1.4l10.8-6.3c1.1-.7 1.1-2.2 0-2.9L2.5.3C1.4-.4 0 .4 0 1.7Z" fill="#fff"/></svg></span></div>
+        <div class="lesson__body">
+          <h3 class="lesson__title">Chemical Reactions &amp; Atoms</h3>
+          <p class="lesson__desc">Explore how atoms bond together and watch interactive<br class="d-br"> simulations of safe, everyday chemical experiments.</p>
+        </div>
+        <span class="dur">10 min</span>
+      </li>
+      <li class="lesson">
+        <div class="thumb"><img class="z-speed" alt="" src="asset/image-cca16e75b0dddfc1.webp"><span class="play"><svg viewBox="0 0 14 16" aria-hidden="true"><path d="M0 1.7v12.6c0 1.3 1.4 2.1 2.5 1.4l10.8-6.3c1.1-.7 1.1-2.2 0-2.9L2.5.3C1.4-.4 0 .4 0 1.7Z" fill="#fff"/></svg></span></div>
+        <div class="lesson__body">
+          <h3 class="lesson__title">Speed, Velocity, and Acceleration</h3>
+          <p class="lesson__desc">Discover the difference between speed and velocity,<br class="d-br"> and see how forces change the way objects move.</p>
+        </div>
+        <span class="dur">15 min</span>
+      </li>
+      <li class="lesson">
+        <div class="thumb"><img class="z-inertia" alt="" src="asset/image-7c8af4e422c39368.webp"><span class="play"><svg viewBox="0 0 14 16" aria-hidden="true"><path d="M0 1.7v12.6c0 1.3 1.4 2.1 2.5 1.4l10.8-6.3c1.1-.7 1.1-2.2 0-2.9L2.5.3C1.4-.4 0 .4 0 1.7Z" fill="#fff"/></svg></span></div>
+        <div class="lesson__body">
+          <h3 class="lesson__title">Inertia and Mass in Action</h3>
+          <p class="lesson__desc">Understand why heavy objects are harder to push and how<br class="d-br"> inertia keeps passengers moving forward when a car stops.</p>
+        </div>
+        <span class="dur">14 min</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== PROMO ===== -->
+  <aside class="promo" aria-label="New course">
+    <img class="promo__bg" alt="" src="asset/image-cd8e84130025c95b.webp">
+    <div class="promo__chips"><span class="gchip gchip--a">New Course</span><span class="gchip gchip--b">Starts July 1</span></div>
+    <a class="join" href="#" role="button">Join now • from $340</a>
+    <h2 class="promo__title">AI &amp; Robotics for Kids</h2>
+    <p class="promo__desc">Learn how smart algorithms work and build<br class="d-br"> your first virtual robot from scratch.</p>
+  </aside>
+
+</main>
+</div>
+<script>
+(function(){
+  var DW=1527, DH=1030;
+  var body=document.body, shell=document.getElementById('shell'), stage=document.getElementById('stage');
+  var hero=stage.querySelector('.hero');
+  function measure(MW){
+    stage.style.transform='none';
+    stage.style.width=MW+'px'; stage.style.height='auto';
+    hero.style.flex='none'; hero.style.height='0px';
+    var h=stage.offsetHeight;                 // everything except the video
+    hero.style.flex=''; hero.style.height='';
+    return h;
+  }
+  function fit(){
+    var vw=document.documentElement.clientWidth||innerWidth;
+    var vh=document.documentElement.clientHeight||innerHeight;
+    var compact = (vw/vh) < 1.1;
+    var phone = compact && vw < 600;
+    body.classList.toggle('compact', compact);
+    body.classList.remove('dense');
+    var s;
+    if(!compact){
+      // Desktop / landscape: the reference artboard, extended to the viewport's aspect ratio.
+      s=Math.min(vw/DW, vh/DH);
+    } else {
+      // Portrait: fixed blocks + a minimum video height must fit in one screen.
+      var MW = phone ? 430 : 520, heroMin = phone ? 300 : 380;
+      s=Math.min(vw/MW, vh/(measure(MW)+heroMin));
+      if(phone && s < 0.86*vw/MW){            // short phone: switch to the dense tier
+        body.classList.add('dense');
+        s=Math.min(vw/MW, vh/(measure(MW)+heroMin));
+      }
+    }
+    var W=vw/s, H=vh/s;
+    body.classList.toggle('tight', compact && W < 560);
+    stage.style.width=W+'px';
+    stage.style.height=H+'px';
+    stage.style.transform='scale('+s+')';
+  }
+  fit();
+  addEventListener('resize', fit);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(fit);}
+})();
+</script>
+</body>
+</html>
